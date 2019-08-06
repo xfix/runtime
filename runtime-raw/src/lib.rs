@@ -5,7 +5,6 @@
 //! perform IO, then there's no need to bother with any of these types as they will have been
 //! implemented for you already.
 
-#![feature(async_await)]
 #![deny(unsafe_code)]
 #![warn(
     missing_debug_implementations,
@@ -63,10 +62,9 @@ where
 {
     let (tx, rx) = futures::channel::oneshot::channel();
 
-    let fut = async move {
-        let t = fut.await;
+    let fut = fut.map(|t| {
         let _ = tx.send(t);
-    };
+    });
 
     rt.spawn_boxed(fut.boxed()).expect("cannot spawn a future");
 
